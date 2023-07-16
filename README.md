@@ -13,7 +13,7 @@ The **_SavePass_** project is a mobile password management application. With it,
 
 ---
 
-<div align="center" ><img src="https://i.imgur.com/NVGKkba.gif" width="220">
+<div align="center" ><video src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXA1d3l4ODFha3N2dXZlZmgwcDdsOWpkNjdtemw3MzZ3amU3YW15cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uDKSiUseL4kIJZKNCC/giphy.gif" width="250">
 </div>
 
 ---
