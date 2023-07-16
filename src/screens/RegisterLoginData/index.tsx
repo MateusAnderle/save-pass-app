@@ -1,79 +1,68 @@
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useForm } from 'react-hook-form';
-import { RFValue } from 'react-native-responsive-fontsize';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import uuid from 'react-native-uuid';
+import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { FieldValues, useForm } from "react-hook-form";
+import { RFValue } from "react-native-responsive-fontsize";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import uuid from "react-native-uuid";
 
-import { Header } from '../../components/Header';
-import { Input } from '../../components/Form/Input';
-import { Button } from '../../components/Form/Button';
+import { Header } from "../../components/Header";
+import { Input } from "../../components/Form/Input";
+import { Button } from "../../components/Form/Button";
 
-import {
-  Container,
-  Form
-} from './styles';
-import { StackNavigationProp } from '@react-navigation/stack';
-
-interface FormData {
-  service_name: string;
-  email: string;
-  password: string;
-}
+import { Container, Form } from "./styles";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const schema = Yup.object().shape({
-  service_name: Yup.string().required('Nome do serviço é obrigatório!'),
-  email: Yup.string().email('Não é um email válido').required('Email é obrigatório!'),
-  password: Yup.string().required('Senha é obrigatória!'),
-})
+  service_name: Yup.string().required("Service name is required!"),
+  email: Yup.string().email("Invalid email").required("Email is required!"),
+  password: Yup.string().required("Password is required!"),
+});
 
 type RootStackParamList = {
   Home: undefined;
   RegisterLoginData: undefined;
 };
 
-type NavigationProps = StackNavigationProp<RootStackParamList, 'RegisterLoginData'>;
+type NavigationProps = StackNavigationProp<
+  RootStackParamList,
+  "RegisterLoginData"
+>;
 
 export function RegisterLoginData() {
-  const { navigate } = useNavigation<NavigationProps>()
+  const { navigate } = useNavigation<NavigationProps>();
   const {
     control,
     handleSubmit,
-    formState: {
-      errors
-    }
+    formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
 
-  async function handleRegister(formData: FormData) {
+  async function handleRegister(formData: FieldValues) {
     const newLoginData = {
       id: String(uuid.v4()),
-      ...formData
-    }
+      ...formData,
+    };
 
-    const dataKey = '@savepass:logins';
+    const dataKey = "@savepass:logins";
 
     const response = await AsyncStorage.getItem(dataKey);
-    const parsedData = JSON.parse(response) || [];
+    const parsedData = response ? JSON.parse(response) : [];
 
-    const newLoginListData = [
-      ...parsedData,
-      newLoginData
-    ];
+    const newLoginListData = [...parsedData, newLoginData];
 
     await AsyncStorage.setItem(dataKey, JSON.stringify(newLoginListData));
 
-    navigate('Home');
+    navigate("Home");
   }
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       enabled
     >
       <Header />
@@ -81,16 +70,16 @@ export function RegisterLoginData() {
         <Form>
           <Input
             testID="service-name-input"
-            title="Nome do serviço"
+            title="Service name"
             name="service_name"
-            error={errors.service_name && errors.service_name.message}
+            error={errors?.service_name && errors?.service_name?.message}
             control={control}
             autoCapitalize="sentences"
             autoCorrect
           />
           <Input
             testID="email-input"
-            title="E-mail ou usuário"
+            title="Email or username"
             name="email"
             error={errors.email && errors.email.message}
             control={control}
@@ -100,7 +89,7 @@ export function RegisterLoginData() {
           />
           <Input
             testID="password-input"
-            title="Senha"
+            title="Password"
             name="password"
             error={errors.password && errors.password.message}
             control={control}
@@ -109,13 +98,13 @@ export function RegisterLoginData() {
 
           <Button
             style={{
-              marginTop: RFValue(8)
+              marginTop: RFValue(8),
             }}
-            title="Salvar"
+            title="Save"
             onPress={handleSubmit(handleRegister)}
           />
         </Form>
       </Container>
     </KeyboardAvoidingView>
-  )
+  );
 }

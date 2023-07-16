@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   Container,
@@ -10,57 +11,91 @@ import {
   LoginData,
   BoldTitle,
   Email,
-} from './styles';
+  PasswordWrapper,
+  TrashBox,
+  TrashIcon,
+} from "./styles";
+import { Alert } from "react-native";
 
-interface Props {
+interface Service {
   service_name: string;
   email: string;
   password: string;
 }
 
-export function LoginDataItem({
-  service_name,
-  email,
-  password
-}: Props) {
+interface Props {
+  service: Service;
+  loadData: () => void;
+}
+
+export function LoginDataItem({ service, loadData }: Props) {
   const [passIsVisible, setPassIsVisible] = useState(false);
+  const { service_name, email, password } = service;
 
   function handleTogglePassIsVisible() {
     setPassIsVisible(!passIsVisible);
   }
 
-  return (
-    <Container
-      colors={[
-        passIsVisible
-          ? '#EBF2FF'
-          : '#ffffff',
-        '#ffffff'
-      ]}
-    >
-      <ShowPasswordButton
-        onPress={handleTogglePassIsVisible}
-      >
-        <Icon
-          name={passIsVisible ? "eye" : "eye-off"}
-          color={passIsVisible ? '#1967FB' : '#888D97'}
-        />
-      </ShowPasswordButton>
+  async function handleDeleteItem() {
+    Alert.alert(
+      "Attention!",
+      `Do you really want to delete ${service_name} password?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Sure!",
+          onPress: async () => {
+            const dataKey = "@savepass:logins";
 
-      {passIsVisible
-        ? (
+            const response = await AsyncStorage.getItem(dataKey);
+            const parsedData = response ? JSON.parse(response) : [];
+
+            if (parsedData.length > 0) {
+              const newLoginListData = parsedData.filter(
+                (service: Service) => service.service_name !== service_name
+              );
+              await AsyncStorage.setItem(
+                dataKey,
+                JSON.stringify(newLoginListData)
+              );
+
+              loadData();
+            }
+          },
+        },
+      ]
+    );
+  }
+
+  return (
+    <Container colors={[passIsVisible ? "#EBF2FF" : "#ffffff", "#ffffff"]}>
+      <PasswordWrapper>
+        <ShowPasswordButton onPress={handleTogglePassIsVisible}>
+          <Icon
+            name={passIsVisible ? "eye" : "eye-off"}
+            color={passIsVisible ? "#fca311" : "#888D97"}
+          />
+        </ShowPasswordButton>
+
+        {passIsVisible ? (
           <PassData>
             <Title>{service_name}</Title>
             <Password>{password}</Password>
           </PassData>
-        )
-        : (
+        ) : (
           <LoginData>
             <BoldTitle>{service_name}</BoldTitle>
             <Email>{email}</Email>
           </LoginData>
-        )
-      }
+        )}
+      </PasswordWrapper>
+
+      <TrashBox onPress={handleDeleteItem}>
+        <TrashIcon name="trash" color="#888D97" />
+      </TrashBox>
     </Container>
   );
 }
