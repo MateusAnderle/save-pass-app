@@ -120,7 +120,7 @@ yarn android
 
 - Remember that if you are running it on an emulator, it is ideal to keep it open before applying the above commands.
 
-Testing - To run the project's tests, execute the following command in the terminal:
+### :test_tube: Testing - To run the project's tests, execute the following command in the terminal:
 
 ```bash
 yarn test
