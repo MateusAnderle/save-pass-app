@@ -128,4 +128,4 @@ yarn test
 
 ---
 
-:rocket: Desenvolvido por Mateus Anderle da Silva.
+:rocket: Developed by Mateus Anderle da Silva.
