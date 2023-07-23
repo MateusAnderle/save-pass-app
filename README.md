@@ -129,4 +129,10 @@ yarn test
 
 ---
 
-:rocket: Developed by Mateus Anderle da Silva.
+## :balance_scale: License
+
+This project is under the MIT license. See the [LICENSE](https://github.com/MateusAnderle/save-pass-app/blob/main/LICENSE) for more information.
+
+---
+:rocket: Developed by Mateus Anderle da Silva [Get in touch!](https://www.linkedin.com/in/mateus-anderle-da-silva/)
+
