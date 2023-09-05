@@ -17,7 +17,7 @@ The **_SavePass_** project is a mobile password management application. With it,
 <img src="/assets/images/homescreen.gif" width="300">
 </div>
 
----
+--- 
 
 ## :information_source: About
 
